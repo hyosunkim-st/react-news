@@ -2,7 +2,15 @@ import React, { useCallback } from 'react';
 import { List } from 'react-virtualized';
 import TodoListItem from './TodoListItem';
 import styled from 'styled-components';
- 
+
+
+const TodoListStyle = styled.div`
+
+min-height: 320px;
+max-height: 513px;
+overflow-y: auto;
+`;
+
 const TodoList = ({ todos, onRemove, onToggle }) => {
   const rowRenderer = useCallback(
     ({ index, key, style }) => {
@@ -19,12 +27,6 @@ const TodoList = ({ todos, onRemove, onToggle }) => {
     },
     [onRemove, onToggle, todos],
   );
-  const TodoListStyle = styled.div`
-
-    min-height: 320px;
-    max-height: 513px;
-    overflow-y: auto;
-  `;
   return (
     <TodoListStyle>
     <List

@@ -2,11 +2,11 @@ import React from 'react';
 import NewsPage from './pages/NewsPage';
 // import { Route, Link, BrowserRouter, Switch } from 'react-router-dom';
 import { Route, Link } from 'react-router-dom';
-
 import AppTodo from './pages/todo';
 import styled from 'styled-components';
 import { MenuProvider } from './context';
 import { TodoProvider } from './TodoContext';
+import CounterContainer from './Counter';
 
 const App = () => {
   const LinkStyle = styled.div`
@@ -20,19 +20,23 @@ const App = () => {
   `;
   return (
 <>
+{/* <CounterContainer> */}
+
 <MenuProvider>
-  
     <TodoProvider>
+
       <LinkStyle>
         <ul><Link to="/todo">TODO</Link></ul>     
         <ul><Link to="/news">NEWS</Link></ul>
       </LinkStyle>
         <Route path="/todo" component={AppTodo} exact={true} />
         <Route path="/news/:category?" component={NewsPage} />
-        <Route path="/" component={NewsPage} />
+        <Route path="/" component={NewsPage} exact={true} />
+
     </TodoProvider>  
 </MenuProvider>
 
+{/* </CounterContainer> */}
 
 
     {/* <MenuProvider>

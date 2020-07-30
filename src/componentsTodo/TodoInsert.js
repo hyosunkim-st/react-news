@@ -1,26 +1,7 @@
 import React, { useState, useCallback } from 'react';
 import { MdAdd } from 'react-icons/md';
 import styled from 'styled-components';
- 
-const TodoInsert = ({ onInsert }) => {
-  const [value, setValue] = useState('');
- 
-  const onChange = useCallback(e => {
-    setValue(e.target.value); //event에서 target의 value를 받아서 input이 변경될 때마다 value를 새로 설정
-  }, []);
- 
-  const onSubmit = useCallback(
-    e => {
-      onInsert(value);
-      setValue(''); // value 값 초기화
- 
-      // submit 이벤트는 브라우저에서 새로고침을 발생시킵니다.
-      // 이를 방지하기 위해 이 함수를 호출합니다.
-      e.preventDefault();
-    },
-    [onInsert, value],
-  );
- 
+
 const TodoInsertStyle = styled.div`
 
     display: flex;
@@ -60,6 +41,25 @@ const TodoInsertStyle = styled.div`
     }
   `;
 
+const TodoInsert = ({ onInsert }) => {
+  const [value, setValue] = useState('');
+ 
+  const onChange = useCallback(e => {
+    setValue(e.target.value); //event에서 target의 value를 받아서 input이 변경될 때마다 value를 새로 설정
+  }, []);
+ 
+  const onSubmit = useCallback(
+    e => {
+      onInsert(value);
+      setValue(''); // value 값 초기화
+ 
+      // submit 이벤트는 브라우저에서 새로고침을 발생시킵니다.
+      // 이를 방지하기 위해 이 함수를 호출합니다.
+      e.preventDefault();
+    },
+    [onInsert, value],
+  );
+ 
 
   return (
     <TodoInsertStyle>

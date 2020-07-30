@@ -6,22 +6,25 @@ import AppTodo from './pages/todo';
 
 
 const initialState = {
-state: {
-    Todo: []
-}, 
-action: { setTodo: () => {} }};
+    state: {
+        todo: []
+    }, 
+    action: { 
+        setTodo: () => {} 
+    }
+};
 
 
 
-export const TodoContext = createContext(initialState);
+const TodoContext = createContext(initialState);
 export const TodoProvider = ({children}) => {
-    const [todo, setTodo ] = useState(initialState);
+    const [todos, setTodo ] = useState(initialState);
     const value = {
-        ...initialState,
+        ...todos,
         action: { setTodo }
     }
 
-    return( <TodoContext.Provider value={AppTodo}>
+    return( <TodoContext.Provider value={value}>
             {children} 
             </TodoContext.Provider>
     )

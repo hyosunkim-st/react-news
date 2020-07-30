@@ -1,9 +1,11 @@
-import React, { useReducer, useRef, useCallback } from 'react';
+import React, { useReducer, useRef, useCallback, useContext, useState } from 'react';
 import TodoTemplate from '../componentsTodo/TodoTemplate';
 import TodoInsert from '../componentsTodo/TodoInsert';
 import TodoList from '../componentsTodo/TodoList';
 import produce from 'immer';
- 
+import TodoContext from '../TodoContext';
+
+
 function createBulkTodos() {
   const array = [];
   for (let i = 1; i <= 2500; i++) {
@@ -16,87 +18,180 @@ function createBulkTodos() {
   return array;
 }
  
-function todoReducer(todos, action) {
-  switch (action.type) {
-    case 'INSERT': // 새로 추가
-      // { type: 'INSERT', todo: { id: 1, text: 'todo', checked: false } }
-      // return todos.concat(action.todo);
-      return produce(todos, draft => {
-        draft.push(action.todo);
-      }
-      );
 
+const App = () => {
 
-    
-    case 'REMOVE': // 제거
-      // { type: 'REMOVE', id: 1 }
-      // return todos.filter(todo => todo.id !== action.id);
-      return produce(todos, draft => {
-        const index = draft.findIndex(todo => todo.id === action.id);
-        draft.splice(index, 1);
-      }  
-      );
-
-     
-    case 'TOGGLE': // 토글
-      // { type: 'REMOVE', id: 1 }
-      // return todos.map(todo =>
-      //   todo.id === action.id ? { ...todo, checked: !todo.checked } : todo,
-      // );
-      return produce(todos, draft => {
-        const user = draft.findIndex(todo => todo.id === action.id);
-        draft[user].checked = !draft[user].checked;
-      }  
-      );
-
-
-        // setTodos(
-        //         todos.map(todo =>
-        //           todo.id === id ? { ...todo, checked: !todo.checked } : todo,
-        //         ),
-
-        //setTodos(produce(todo, draft.map =>{draft.checked}));
-
-    default:
-      return todos;
-  }
-} 
-
-const App = () => {   //useReducer: useState의 대체함수
-  const [todos, dispatch] = useReducer(todoReducer, undefined, createBulkTodos);    //useReducer를 사용할 때는 원래 두 번째 파라미터에 초기 상태를 넣어 주어야 함. 
-  //지금은 그 대신 두 번째 파라미터에 undefined를 넣고, 세 번째 파라미터에 초기 상태를 만들어 주는 함수인 createBulkTodos를 넣어 줌. 이렇게 하면 컴포넌트가 맨 처음 렌더링될 때만 createBulkTodos 함수가 호출
- 
-  // 고윳값으로 사용될 id
-  // ref를 사용하여 변수 담기
-  const nextId = useRef(2501);
+  // const tc = useContext(TodoContext);
+    const {state: {todo}, action: {setTodo}} = useContext(TodoContext);
+  // console.log(`[TODO]${tc}`)
+  // console.log(`[TODO]${JSON.stringify(todo)}`)
+  
+  const nextId = useRef(4);
  
   const onInsert = useCallback(text => {
-    const todo = {
+    // 텍스트를 입력 받는다
+    
+    // 투두객체로 만든다 
+    const newTodo = {
       id: nextId.current,
       text,
       checked: false,
     };
-    dispatch({ type: 'INSERT', todo });
+    // 새로 만든 거를 원래 투두 리스트에 붙인다 
+    const newTodoList = todo.concat(newTodo);   
+
+    // 컨택스트의 이니셜스테이트랑 같은 모양을 만든다.
+    // 그 모양 안에는 스테이트랑 액션이 있어야 한다.
+    //스테이트 안에는 새로 만든 투두가 있어야 한다. 
+    //액션 안에는 셋투두가 있어야 한다.
+
+    let nc = {state: {...todo}, action: {...setTodo}};
+    nc.state.todo= newTodoList;
+     // 컨택스트에 저장
+    setTodo(nc);
+
+    // setTodo(newTodoList);
+    
+    console.log(`[TODO]${JSON.stringify(newTodo)}`)
+    console.log(`[TODO]${JSON.stringify(newTodoList)}`)
+    console.log(`[TODO]${JSON.stringify(todo)}`)
+
     nextId.current += 1; // nextId 1씩 더하기
-  }, []);
+  }, [todo]);
+      
+  //   return produce(todos => {
+  //     setTodo(todos => todos.concat(newTodo));
+  //   });
+  // }, []);
+
+
  
   const onRemove = useCallback(id => {
-    dispatch({ type: 'REMOVE', id });
-  }, []);
+
+  //   return produce(todos => {
+  //     setTodo(todos.filter(todo => todo.id !== id));
+  //   });
+  // }, []);
+  setTodo(todo.filter(todo => todo.id !== id));
+},
+[]);
  
-  const onToggle = useCallback(id => {
-    dispatch({ type: 'TOGGLE', id });
-  }, []);
- 
+
+  const onToggle = useCallback(id => {  
+    setTodo(todos =>
+      todos.map(todo =>
+        todo.id === id ? { ...todo, checked: !todo.checked } : todo,
+      ),
+    );
+  }, []);  
+  
+
+  //   dispatch({ type: 'TOGGLE', id });
+  // }, []);
+
   return (
-    <TodoTemplate>
-      <TodoInsert onInsert={onInsert} />
-      <TodoList todos={todos} onRemove={onRemove} onToggle={onToggle} />
-    </TodoTemplate>
-  );
+      <TodoTemplate>
+        <TodoInsert onInsert={onInsert} />
+        <TodoList todos={todo} onRemove={onRemove} onToggle={onToggle} />
+      </TodoTemplate>
+    );
 };
- 
+  
 export default App;
+
+// function createBulkTodos() {
+//   const array = [];
+//   for (let i = 1; i <= 2500; i++) {
+//     array.push({
+//       id: i,
+//       text: `할 일 ${i}`,
+//       checked: false,
+//     });
+//   }
+//   return array;
+// }
+
+
+// function todoReducer(todos, action) {
+  // switch (action.type) {
+  //   case 'INSERT': // 새로 추가
+  //     // { type: 'INSERT', todo: { id: 1, text: 'todo', checked: false } }
+  //     // return todos.concat(action.todo);
+  //     return produce(todos, draft => {
+  //       draft.push(action.todo);
+  //     }
+  //     );
+  // case 'REMOVE': // 제거
+  //   // { type: 'REMOVE', id: 1 }
+  //   // return todos.filter(todo => todo.id !== action.id);
+  //   return produce(todos, draft => {
+  //     const index = draft.findIndex(todo => todo.id === action.id);
+  //     draft.splice(index, 1);
+  //   }  
+  //   );
+  // case 'TOGGLE': // 토글
+  //   // { type: 'REMOVE', id: 1 }
+  //   // return todos.map(todo =>
+  //   //   todo.id === action.id ? { ...todo, checked: !todo.checked } : todo,
+  //   // );
+  //   return produce(todos, draft => {
+  //     const user = draft.findIndex(todo => todo.id === action.id);
+  //     draft[user].checked = !draft[user].checked;
+  //   }  
+  //   );
+
+
+//         setTodos(
+//                 todos.map(todo =>
+//                   todo.id === id ? { ...todo, checked: !todo.checked } : todo,
+//                 ),
+
+//         setTodos(produce(todo, draft.map =>{draft.checked}));
+
+//     default:
+//       return todos;
+//   }
+// } 
+
+  //useReducer: useState의 대체함수
+  // const [todos, dispatch] = useReducer(todoReducer, undefined, createBulkTodos);    //useReducer를 사용할 때는 원래 두 번째 파라미터에 초기 상태를 넣어 주어야 함. 
+  //지금은 그 대신 두 번째 파라미터에 undefined를 넣고, 세 번째 파라미터에 초기 상태를 만들어 주는 함수인 createBulkTodos를 넣어 줌. 이렇게 하면 컴포넌트가 맨 처음 렌더링될 때만 createBulkTodos 함수가 호출
+
+// let TODO  = {state: {...state}, action: {...action}};
+// TODO.state.Todo[todos] = response.data
+// action.setTodo(TODO);
+
+// return(
+//   TODO
+// );   
+
+  // 고윳값으로 사용될 id
+  // ref를 사용하여 변수 담기
+  // const nextId = useRef(2501);
+ 
+  // const onInsert = useCallback(text => {
+  //   const todo = {
+  //     id: nextId.current,
+  //     text,
+  //     checked: false,
+  //   };
+  //   dispatch({ type: 'INSERT', todo });
+  //   nextId.current += 1; // nextId 1씩 더하기
+  // }, []);
+ 
+  // const onRemove = useCallback(id => {
+  //   dispatch({ type: 'REMOVE', id });
+  // }, []);
+ 
+  // const onToggle = useCallback(id => {
+  //   dispatch({ type: 'TOGGLE', id });
+  // }, []);
+ 
+
+
+
+
+
 
 // import React, { useState, useRef, useCallback } from 'react';
 // import TodoTemplate from './components/TodoTemplate';

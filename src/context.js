@@ -4,55 +4,58 @@ import { useState } from 'react';
 
 
 const initialState = {
-state: {
-    Menu: {
-        kr: { all: [], 
-            business: [], 
-            entertainment: [], 
-            health: [], 
-            science: [],
-            sports: [], 
-            technology: []
+    state: {
+        Menu: {
+            kr: { all: [], 
+                business: [], 
+                entertainment: [], 
+                health: [], 
+                science: [],
+                sports: [], 
+                technology: []
+                },
+            jp: { all: [], 
+                business: [], 
+                entertainment: [], 
+                health: [], 
+                science: [],
+                sports: [], 
+                technology: []
+                },
+            us: { all: [], 
+                business: [], 
+                entertainment: [], 
+                health: [], 
+                science: [],
+                sports: [], 
+                technology: []
+                },
+            cn: { all: [], 
+                business: [], 
+                entertainment: [], 
+                health: [], 
+                science: [],
+                sports: [], 
+                technology: []
+                }                
             },
-        jp: { all: [], 
-            business: [], 
-            entertainment: [], 
-            health: [], 
-            science: [],
-            sports: [], 
-            technology: []
-            },
-        us: { all: [], 
-            business: [], 
-            entertainment: [], 
-            health: [], 
-            science: [],
-            sports: [], 
-            technology: []
-            },
-        cn: { all: [], 
-            business: [], 
-            entertainment: [], 
-            health: [], 
-            science: [],
-            sports: [], 
-            technology: []
-            }                
-        },
-}, 
-action: { setMenu: () => {} }};
+    }, 
+    action: { 
+        setMenu: () => {} 
+    }
+};
 
 export const MenuContext = createContext(initialState);
 export const MenuProvider  = ({children}) => {
     const [ menu, setMenu] = useState(initialState);
     // eslint-disable-next-line
     const value={
-        ...initialState,
+        ...menu,
         action: { setMenu }
     }
 
 
-    return( <MenuContext.Provider value={menu}>
+    return( <MenuContext.Provider value={value}>
             {children} 
             </MenuContext.Provider>
     )

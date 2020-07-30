@@ -74,6 +74,7 @@ const NewsList = ({ category, country }) => {
     console.log(response)
 
     action.setMenu(nc);
+    console.log(action.setMenu);
     setResponse(null);
   }
   // 에러가 발생했을 때
