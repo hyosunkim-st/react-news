@@ -6,6 +6,7 @@ import AppTodo from './pages/todo';
 import styled from 'styled-components';
 import { MenuProvider } from './context';
 import { TodoProvider } from './TodoContext';
+import MoviePage from './pages/MoviePage';
 import CounterContainer from './Counter';
 
 const App = () => {
@@ -29,10 +30,12 @@ const App = () => {
       <LinkStyle>
         <ul><Link to="/todo">TODO</Link></ul>     
         <ul><Link to="/news">NEWS</Link></ul>
+        <ul><Link to="/movies">MOVIES</Link></ul>
       </LinkStyle>
         <Route path="/todo" component={AppTodo} exact={true} />
         <Route path="/news/:category?" component={NewsPage} />
         <Route path="/" component={NewsPage} exact={true} />
+        <Route path="/movies" component={MoviePage} exact={true} />
 
     </TodoProvider>  
 </MenuProvider>

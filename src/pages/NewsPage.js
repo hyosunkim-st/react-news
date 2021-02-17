@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import Categories from '../components/Categories';
-import NewsList from '../components/NewsList';
+import Categories from '../componentsNews/Categories';
+import NewsList from '../componentsNews/NewsList';
 
  
 const NewsPage = ({ match }) => { //App.js에 Route 때문
